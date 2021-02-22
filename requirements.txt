@@ -1,0 +1,2 @@
+urllib3~=1.26.3
+daemonize~=2.5.0
