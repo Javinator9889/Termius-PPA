@@ -1,5 +1,5 @@
-#                             discord-ppa
-#                  Copyright (C) 2020 - Javinator9889
+#                             termius-ppa
+#                  Copyright (C) 2021 - Javinator9889
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@ import urllib3
 import logging
 
 from pathlib import Path
+from warnings import warn
 from sched import scheduler
 from time import time, sleep
 from daemonize import Daemonize
@@ -27,21 +28,23 @@ from tempfile import NamedTemporaryFile
 from logging.handlers import RotatingFileHandler
 
 delay_secs = 900
-discord_url = "https://discordapp.com/api/download?platform=linux&format=deb"
-discord_pbeta_url = \
-    "https://discordapp.com/api/download/ptb?platform=linux&format=deb"
+termius_url = "https://www.termius.com/download/linux/Termius.deb"
+termius_beta_url = \
+    "https://www.termius.com/beta/download/linux/Termius+Beta.deb?latest"
 try:
     ppa_path = sys.argv[1]
 except IndexError:
-    print("You must provide the PPA directory")
+    warn("You must provide the PPA directory.\n"
+         "Usage: python lookup-server.py PATH", category=RuntimeWarning)
     exit(1)
-reprepro_cmd = "reprepro -b {0} includedeb %dist% %file%".format(ppa_path)
+    
+reprepro_cmd = f"reprepro -b {ppa_path} includedeb %dist% %file%"
 http = urllib3.PoolManager()
 
 home = str(Path.home())
-pid = "{0}/discord-ppa/discord-ppa.pid".format(home)
+pid = f"{home}/termius-ppa/termius-ppa.pid"
 try:
-    os.mkdir("{0}/discord-ppa".format(home))
+    os.mkdir(f"{home}/termius-ppa")
 except FileExistsError:
     pass
 
@@ -51,8 +54,8 @@ fmt = logging.Formatter(
     "%(process)d - %(asctime)s | [%(levelname)s]: %(message)s"
 )
 
-file_handler = RotatingFileHandler("{0}/discord-ppa/discord-ppa.log"
-                                   .format(home), "w", maxBytes=2 << 20,
+file_handler = RotatingFileHandler(f"{home}/termius-ppa/termius-ppa.log", 'w',
+                                   maxBytes=2 << 20,
                                    backupCount=2)
 file_handler.setLevel(logging.INFO)
 file_handler.setFormatter(fmt)
@@ -75,10 +78,10 @@ def main():
 def download_latest_deb(fp: NamedTemporaryFile, url: str):
     result = http.request("GET", url, redirect=True)
     if result.status == 200:
-        logger.info("Downloaded correctly Discord .deb file")
+        logger.info("Downloaded correctly Termius .deb file")
         fp.write(result.data)
     else:
-        logger.error("Discord .deb file could not be downloaded - status "
+        logger.error("Termius .deb file could not be downloaded - status "
                      "code: {0}".format(result.status))
 
 
@@ -91,27 +94,34 @@ def update_reprepro(fp: NamedTemporaryFile, dist: str):
     if proc.returncode != 0:
         error = err.decode("utf-8")
         logger.error("reprepro ended with an error - ret. code: "
-                     "{0} | output: \n{1}".format(proc.returncode,
-                                                  error))
+                     f"{proc.returncode}")
+        logger.error(">>>>>>>>>>>>>>>>>>>>>>>>")
+        for line in error.splitlines():
+            if line.strip() and not line.strip().isspace():
+                logger.error(f"> {line}")
     else:
         output = out.decode("utf-8") + "\n" + err.decode("utf-8")
-        logger.info("reprepro finished OK | output:\n {0}".format(output))
+        logger.info("reprepro finished OK")
+        logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>")
+        for line in output.splitlines():
+            if line.strip() and not line.strip().isspace():
+                logger.info(f"> {line}")
 
 
 def run_update_process():
     stable = NamedTemporaryFile(suffix=".deb")
     beta = NamedTemporaryFile(suffix=".deb")
     try:
-        download_latest_deb(stable, discord_url)
+        download_latest_deb(stable, termius_url)
         update_reprepro(stable, "all")
-        download_latest_deb(beta, discord_pbeta_url)
+        download_latest_deb(beta, termius_beta_url)
         update_reprepro(beta, "public-beta")
     finally:
         stable.close()
         beta.close()
 
 
-daemon = Daemonize(app="discord-ppa",
+daemon = Daemonize(app="termius-ppa",
                    pid=pid,
                    action=main,
                    keep_fds=keep_fds,
