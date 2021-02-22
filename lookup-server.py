@@ -97,13 +97,15 @@ def update_reprepro(fp: NamedTemporaryFile, dist: str):
                      f"{proc.returncode}")
         logger.error(">>>>>>>>>>>>>>>>>>>>>>>>")
         for line in error.splitlines():
-            logger.error(line)
+            if not line.isspace():
+                logger.error(f"> {line}")
     else:
         output = out.decode("utf-8") + "\n" + err.decode("utf-8")
         logger.info("reprepro finished OK")
         logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>")
         for line in output.splitlines():
-            logger.info(line)
+            if not line.isspace():
+                logger.info(f"> {line}")
 
 
 def run_update_process():
