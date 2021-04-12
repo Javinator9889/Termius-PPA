@@ -3,6 +3,13 @@
 
 A package manager that downloads the latest Termius `.deb` file available from official website
 
+# Installation
+Full installation tutorial available at: https://blog.javinator9889.com/termius-ppa. The blog
+is constantly updated and contains latest fixes (if any). Here is the same procedure but
+not as much explanatory as the blog itself.
+
+* * * 
+
 ## Motivation
 
 [Termius](https://termius.com/) is the #1 cross-platform terminal for 
