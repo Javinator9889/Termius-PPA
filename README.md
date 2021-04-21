@@ -38,10 +38,6 @@ In that way, the PPA is always up-to-date (with a delay of at most 15
 minutes), and the end-user can have the stable installation of Termius
 (or beta one) in their computers.
 
-## Installation
-
-Please, refer to https://blog.javinator9889.com/termius-ppa for up-to-date instructions: some things changes and the blog is constantly being updated.
-
 You can browse the repository at the following URL:
 https://ppa.javinator9889.com
 
