@@ -40,64 +40,10 @@ minutes), and the end-user can have the stable installation of Termius
 
 ## Installation
 
-Firstly, we need to **import** the GPG repository keys:
-
-```shell script
-sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 08633B4AAAEB49FC
-```
-
-Then, add the repository to your `sources.list` as follows:
-
-+ For the *stable* version, use the `all` distribution.
-+ For the *beta* version, use the `public-beta` distribution.
-+ You can use HTTPS if you want.
-
-```shell script
-# Stable repository
-sudo add-apt-repository "deb [arch=amd64] https://ppa.javinator9889.com all main"
-
-# Beta repository
-sudo add-apt-repository "deb [arch=amd64] https://ppa.javinator9889.com public-beta main"
-```
-
-Finally, update and install Termius:
-
-```shell script
-sudo apt update && sudo apt install termius-app
-
-# If using public beta, install as follows:
-sudo apt install termius-beta
-```
+Please, refer to https://blog.javinator9889.com/termius-ppa for up-to-date instructions: some things changes and the blog is constantly being updated.
 
 You can browse the repository at the following URL:
 https://ppa.javinator9889.com
-
-## Upgrading
-
-For upgrading Termius, it is as simple as running the `apt update` and `apt
- upgrade` commands:
- 
-```shell script
-sudo apt update && sudo apt upgrade
-```
-
-## Uninstalling Termius and repository
-
-If you would like to remove Termius from your computer and remove the repository
-from your `sources.list`, run the following commands:
-
-```shell script
-sudo apt remove termius-app
-# If using public beta, uninstall as follows
-sudo apt remove termius-beta
-
-# Remove the repository using the add-apt-repository command
-# Keep in mind it must be the same as you added (stable, beta, etc.)
-sudo add-apt-repository -r "deb [arch=amd64] https://ppa.javinator9889.com all main"
-
-# Finally, remove the key if you want not to trust it anymore
-sudo apt-key del 08633B4AAAEB49FC
-```
 
 ## License
 
